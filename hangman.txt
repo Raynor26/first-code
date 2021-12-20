@@ -1,0 +1,2 @@
+Goal:
+To create a hangman game in which the user asks if certain letters are present in a word. If the letter is present it will show up and they will get another guess. If it is not that letter will be removed from the possible selection list and a guess counter will be subtracted from the guess limit. If the user uses all their guess counters they lose. If they choose to guess the word and get it wrong they lose a guess counter. If they choose to guess the word and get it correct they win the game.
