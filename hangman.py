@@ -2,13 +2,11 @@ from random import choice
 
 
 # Words that can be selected as the primary word
-possible_words = ['song', 'dangerous', 'justice']
+possible_words = ['element', 'dangerous', 'justice', 'programmer', 'jolly', 'hello']
 # A list to hold wrong guesses
 wrong_guesses = []
 # A list to hold correct guesses
 correct_guesses = []
-# a list to hold how many guesses have been attempted
-guess_counters = len(wrong_guesses)
 
 # Boolean flag to activate/deactivate the game script
 alive = True
@@ -22,23 +20,20 @@ def selected_word():
 
 def user_guess():
 	"""A function that prompts the user for a guess if they have enough guess tokens"""
-	if guess_counters <= 8:
-		wrong_input = True
-		while wrong_input:
-			letter = input("Please pick a letter: ").lower()
-			if len(letter) != 1:
-				print("\n\tPlease pick a single letter\n\n")
-			elif letter in correct_guesses or letter in wrong_guesses:
-				print("\n\tYou have already guessed that, please select again\n\n")
-			elif not letter.isalpha():
-				print("\n\tPlease select a letter\n\n") 
-			else:
-				wrong_input = False
+	while True:
+		letter = input("\nPlease pick a letter: ").lower()
+		if len(letter) != 1:
+			print("\n\tPlease pick a single letter\n\n")
+		elif letter in correct_guesses or letter in wrong_guesses:
+			print("\n\tYou have already guessed that, please select again\n\n")
+		elif not letter.isalpha():
+			print("\n\tPlease select a letter\n\n") 
+		else:
+			break
 	return letter
 
 def check_guess(letter):
 	"""Check to see if the letter is in the word"""
-	print(letter)
 	if letter in the_word:
 		print(f"\n\tYes, {letter} is in the word!\n\n")
 		correct_guesses.append(letter)
@@ -48,35 +43,74 @@ def check_guess(letter):
 		
 def status_update():
 	"""Lets the player know how many guesses they have left and what letters are correct and incorrect"""
-	if _guesses_left() > 0:
-		print(f"Guesses left: {_guesses_left()}")
-		print(f"These letters are not in the word: {wrong_guesses} ")
-		print(f"These letters are in the word: {correct_guesses} ")
-	elif _guesses_left() <= 0:
-		print("\tSorry, you've been hung!!!\n\n")
-		print(f"The word was '{the_word.upper()}'. Better luck next time!")
-		alive = False
+	print(f"\n\tGuesses left: {_guesses_left()}")
+	print(f"\nThese letters are not in the word: {wrong_guesses} ")
+	print(f"These letters are in the word: {correct_guesses}\n ")
+	# Display the word as the player knows it so far
+	_display_word()
+	print(f"{status} {len(status)}")
 
+def hung():
+	"""If the player runs out of guesses this message gets shown"""
+	print("\tSorry, you've been hung!!!\n\n")
+	print(f"The word was '{the_word.upper()}'. Better luck next time!")
+		
 def _guesses_left():
 	"""A support function to calculate the number of guesses left"""
-	lives = 8 - len(wrong_guesses)
+	lives = 10
+	lives -= len(wrong_guesses)
 	return lives
 
 def _win_check():
 	"""Check if the player has won the game"""
-	if len(correct_guesses) == len(the_word):
-		print(f"Well done, you have guessed all the letters!\n The word is {the_word.upper()}!")
+	all_letters = True
+	for l in the_word:
+		if l not in correct_guesses:
+			all_letters = False
+			break
+	if all_letters == False:
+		return 'no'
+	if all_letters == True:
+		return 'yes'
 
+
+def _display_word():
+	"""Function to display the current state of the word"""
+	for l in range(len(the_word)):
+		if the_word[l] in correct_guesses:
+			status[l] = the_word[l]
+
+def attempt_guess():
+	"""Allows the player a chance to guess the word at the cost of a life if its wrong"""
+	answer = ("What is the word? ")
+	if answer.lower() == the_word:
+		print("YOU WIN!!!!!")
+		return False
+	else:
+		lives -= 1
+
+def win_script():
+	"""Shows if the player has won"""
+	print(f"Congratulations YOU WIN!!! The word was {the_word.upper()} \n\n")
 
 the_word = selected_word()
-print(the_word) # Used to test code, NEEDS REMOVING!!!!!!
+status = ["_"] * len(the_word)
 while alive:
-	_win_check()
-	status_update()
+	if _guesses_left() > 0:
+		status_update()
+	elif _guesses_left() <= 0:
+		hung()
+		break
 	letter = user_guess()
 	check_guess(letter)
+	if _win_check() == 'yes':
+		win_script()
+		break
+	else:
+		continue
+	
 
-
+print("Thank you for playing!\n")
 
 
 
