@@ -19,6 +19,7 @@ wrong_input = True
 def selected_word():
 	"""A function to choose a random word from a set list"""
 	word = choice(possible_words)
+	possible_words.remove(word)
 	return word
 
 def user_guess():
@@ -46,7 +47,7 @@ def check_guess(letter):
 		
 def status_update():
 	"""Lets the player know how many guesses they have left and what letters are correct and incorrect"""
-	print(f"\n\tGuesses left: {_guesses_left()}")
+	print(f"\tGuesses left: {_guesses_left()}")
 	print(f"\nThese letters are not in the word: {wrong_guesses} ")
 	print(f"These letters are in the word: {correct_guesses}\n ")
 	# Display the word as the player knows it so far
@@ -117,7 +118,7 @@ def reset():
 
 def greeting():
 	"""Greets the user when they open the app"""
-	print("\n\n\n\t\t/// WELCOME TO HANGMAN ///\n\n")
+	print("\n\n\n\t\t/// WELCOME TO HANGMAN ///\n")
 
 
 # MAIN GAME LOOP
