@@ -2,7 +2,8 @@ from random import choice
 
 
 # Words that can be selected as the primary word
-possible_words = ['element', 'dangerous', 'justice', 'programmer', 'jolly', 'hello']
+possible_words = ['element', 'dangerous', 'justice', 'programmer', 'jolly', 'hello', 'panther', 'mercury', 'random',
+'fluffy', 'generate', 'enforcer', 'tackle', 'blurry']
 # A list to hold wrong guesses
 wrong_guesses = []
 # A list to hold correct guesses
