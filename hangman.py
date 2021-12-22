@@ -8,7 +8,9 @@ wrong_guesses = []
 # A list to hold correct guesses
 correct_guesses = []
 
-# Boolean flag to activate/deactivate the game script
+# Flag to run game script again or to quit game
+play = True
+# Boolean flag to activate/deactivate the main game script
 alive = True
 # Flag to operate selected word function
 wrong_input = True
@@ -93,24 +95,57 @@ def win_script():
 	"""Shows if the player has won"""
 	print(f"Congratulations YOU WIN!!! The word was {the_word.upper()} \n\n")
 
-the_word = selected_word()
-status = ["_"] * len(the_word)
-while alive:
-	if _guesses_left() > 0:
-		status_update()
-	elif _guesses_left() <= 0:
-		hung()
-		break
-	letter = user_guess()
-	check_guess(letter)
-	if _win_check() == 'yes':
-		win_script()
-		break
-	else:
-		continue
-	
+def play_again():
+	"""Asks the user if they would like to play again"""
+	while True:
+		replay = input("Would you like to play again? (y/n): ")
+		if len(replay) != 1:
+			print("\n\tPlease pick 'y' or 'n'\n")
+		elif not replay.isalpha():
+			print("\n\tPlease pick 'y' or 'n'\n")
+		else:
+			return replay
+	if replay.lower() == 'y':
+		return 'y'
+	elif replay.lower() == 'n':
+		return 'n'
+def reset():
+	"""Resets all the lists so the player has a fresh start"""
+	wrong_guesses.clear()
+	correct_guesses.clear()
 
-print("Thank you for playing!\n")
+def greeting():
+	"""Greets the user when they open the app"""
+	print("\n\n\n\t\t/// WELCOME TO HANGMAN ///\n\n")
+
+
+# MAIN GAME LOOP
+greeting()
+while play:
+	# Randomly selects a word for the list of options
+	the_word = selected_word()
+	# shows the current state of the word as the user knows it
+	status = ["_"] * len(the_word)
+	while alive:
+		if _guesses_left() > 0:
+			status_update()
+		elif _guesses_left() <= 0:
+			hung()
+			break
+		letter = user_guess()
+		check_guess(letter)
+		if _win_check() == 'yes':
+			win_script()
+			break
+		else:
+			continue
+	
+	if play_again() == 'y':
+		reset()
+		continue
+	else:
+		break
+print("\nThank you for playing!\n")
 
 
 
