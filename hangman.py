@@ -1,6 +1,7 @@
 from random import choice 
 
-
+# Alphabet for giving letters
+alphabet = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']
 # Words that can be selected as the primary word
 possible_words = ['element', 'dangerous', 'justice', 'programmer', 'jolly', 'hello', 'panther', 'mercury', 'random',
 'fluffy', 'generate', 'enforcer', 'tackle', 'blurry']
@@ -26,7 +27,9 @@ def user_guess():
 	"""A function that prompts the user for a guess if they have enough guess tokens"""
 	while True:
 		letter = input("\nPlease pick a letter: ").lower()
-		if len(letter) != 1:
+		if letter == 'answer':
+			break
+		elif len(letter) != 1:
 			print("\n\tPlease pick a single letter\n\n")
 		elif letter in correct_guesses or letter in wrong_guesses:
 			print("\n\tYou have already guessed that, please select again\n\n")
@@ -36,32 +39,44 @@ def user_guess():
 			break
 	return letter
 
-def check_guess(letter):
+def attempt_answer():
+	"""Allows the player the opportunity to take a guess at the answer but loses a guess if its wrong"""
+	attempt = input("\nWhat do you think the word is? ")
+	if attempt.lower() == the_word:
+		return 'win'
+	else: 
+		return 'lose'
+
+def check_guess(letter, token):
 	"""Check to see if the letter is in the word"""
 	if letter in the_word:
-		print(f"\n\tYes, {letter} is in the word!\n\n")
+		print(f"\n\tYes, {letter} is in the word!\n")
 		correct_guesses.append(letter)
+		token = 0
+		return token
 	else:
-		print(f"\n\tSorry, {letter} is not in the word\n\n")
+		print(f"\n\tSorry, {letter} is not in the word\n")
 		wrong_guesses.append(letter)
+		token += 1
+		return token
 		
 def status_update():
 	"""Lets the player know how many guesses they have left and what letters are correct and incorrect"""
-	print(f"\tGuesses left: {_guesses_left()}")
+	print(f"\tGuesses left: {_guesses_left(lives)}")
 	print(f"\nThese letters are not in the word: {wrong_guesses} ")
 	print(f"These letters are in the word: {correct_guesses}\n ")
 	# Display the word as the player knows it so far
 	_display_word()
-	print(f"{status} {len(status)}")
+	print(f"{status}  {len(status)} letter word")
 
 def hung():
 	"""If the player runs out of guesses this message gets shown"""
 	print("\tSorry, you've been hung!!!\n\n")
 	print(f"The word was '{the_word.upper()}'. Better luck next time!")
 		
-def _guesses_left():
+def _guesses_left(guesses):
 	"""A support function to calculate the number of guesses left"""
-	lives = 10
+	lives = guesses 
 	lives -= len(wrong_guesses)
 	return lives
 
@@ -84,18 +99,9 @@ def _display_word():
 		if the_word[l] in correct_guesses:
 			status[l] = the_word[l]
 
-def attempt_guess():
-	"""Allows the player a chance to guess the word at the cost of a life if its wrong"""
-	answer = ("What is the word? ")
-	if answer.lower() == the_word:
-		print("YOU WIN!!!!!")
-		return False
-	else:
-		lives -= 1
-
 def win_script():
 	"""Shows if the player has won"""
-	print(f"Congratulations YOU WIN!!! The word was {the_word.upper()} \n\n")
+	print(f"\nCongratulations YOU WIN!!! The word was {the_word.upper()} \n")
 
 def play_again():
 	"""Asks the user if they would like to play again"""
@@ -111,6 +117,7 @@ def play_again():
 		return 'y'
 	elif replay.lower() == 'n':
 		return 'n'
+
 def reset():
 	"""Resets all the lists so the player has a fresh start"""
 	wrong_guesses.clear()
@@ -118,24 +125,53 @@ def reset():
 
 def greeting():
 	"""Greets the user when they open the app"""
-	print("\n\n\n\t\t/// WELCOME TO HANGMAN ///\n")
+	print("\n\n\n\t\t\t/// WELCOME TO HANGMAN ///\n")
+	print("\tYou can type 'answer' at any time to attempt to guess the word!\n\tBe careful though, you will lose a life if you get it wrong.\n\n")
 
+def hint(token):
+	working_alphabet = []
+	if token >= 3:
+		print("Here is a helping hand, 1 free letter")
+		for l in the_word:
+			if l in alphabet:
+				working_alphabet.append(l)
+		for l in working_alphabet:
+			if l in correct_guesses:
+				working_alphabet.remove(l)
+		working_alphabet = list(set(working_alphabet))
+		new_letter = choice(working_alphabet)
+		correct_guesses.append(new_letter)
+		return False
 
 # MAIN GAME LOOP
 greeting()
 while play:
+	# Sets values for initial lives and hint tokens
+	token = 0
+	lives = 10
 	# Randomly selects a word for the list of options
 	the_word = selected_word()
 	# shows the current state of the word as the user knows it
 	status = ["_"] * len(the_word)
+	
 	while alive:
-		if _guesses_left() > 0:
+		if _guesses_left(lives) > 0:
 			status_update()
-		elif _guesses_left() <= 0:
+		elif _guesses_left(lives) <= 0:
 			hung()
 			break
 		letter = user_guess()
-		check_guess(letter)
+		if letter == 'answer':
+			result = attempt_answer()
+			if result == 'win':
+				win_script()
+				break
+			elif result == 'lose':
+				lives -= 1
+				continue
+		token = check_guess(letter, token)
+		if hint(token) == False:
+			token = 0
 		if _win_check() == 'yes':
 			win_script()
 			break
