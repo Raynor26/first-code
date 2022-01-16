@@ -1,5 +1,16 @@
 from random import choice 
 
+from hangman_images import one as one
+from hangman_images import two as two 
+from hangman_images import three as three
+from hangman_images import four as four 
+from hangman_images import five as five
+from hangman_images import six as six
+from hangman_images import seven as seven
+from hangman_images import eight as eight
+from hangman_images import nine as nine
+from hangman_images import ten as ten
+
 # Alphabet for giving letters
 alphabet = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m']
 # Words that can be selected as the primary word
@@ -143,6 +154,39 @@ def hint(token):
 		correct_guesses.append(new_letter)
 		return False
 
+def print_man(number):
+	"""Prints an image of the current state of the hung man"""
+	if number == 1:
+		for i in one:
+			print(i)
+	elif number == 2:
+		for i in two:
+			print(i)
+	elif number == 3:
+		for i in three:
+			print(i)
+	elif number == 4:
+		for i in four:
+			print(i)
+	elif number == 5:
+		for i in five:
+			print(i)
+	elif number == 6:
+		for i in six:
+			print(i)
+	elif number == 7:
+		for i in seven:
+			print(i)
+	elif number == 8:
+		for i in eight:
+			print(i)
+	elif number == 9:
+		for i in nine:
+			print(i)
+	elif number == 10:
+		for i in ten:
+			print(i)
+
 # MAIN GAME LOOP
 greeting()
 while play:
@@ -155,9 +199,11 @@ while play:
 	status = ["_"] * len(the_word)
 	
 	while alive:
+		print_man(len(wrong_guesses))
 		if _guesses_left(lives) > 0:
 			status_update()
 		elif _guesses_left(lives) <= 0:
+			print_man(lives)
 			hung()
 			break
 		letter = user_guess()
